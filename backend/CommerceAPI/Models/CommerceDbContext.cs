@@ -4,14 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CommerceAPI.Models;
 
-public partial class CommerceDbContext : DbContext
+public class CommerceDbContext : DbContext
 {
     private readonly IConfiguration _configuration;
-
-    public CommerceDbContext()
-    {
-        _configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-    }
 
     public CommerceDbContext(DbContextOptions<CommerceDbContext> options, IConfiguration configuration)
         : base(options)
@@ -168,8 +163,5 @@ public partial class CommerceDbContext : DbContext
                 .HasColumnName("username");
         });
 
-        OnModelCreatingPartial(modelBuilder);
     }
-
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
