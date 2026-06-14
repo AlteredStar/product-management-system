@@ -14,7 +14,29 @@ public class ProductCategoryController : ControllerBase
         _dataSource = dataSource;
     }
 
-    //GET
+    //GET api/product-categories
+    [HttpGet]
+    public async Task<IActionResult> GetAllProductCategories()
+    {
+        using var connection = await _dataSource.OpenConnectionAsync();
+        using var command = new NpgsqlCommand("SELECT * FROM inventory.categories", connection);
+        using var reader = await command.ExecuteReaderAsync();
+
+        var productCategories = new List<ProductCategory>();
+        while (await reader.ReadAsync())
+        {
+            productCategories.Add(new ProductCategory
+            {
+                CategoryId = reader.GetInt32("category_id"),
+                Name = reader.GetString("name"),
+                Description = reader.GetString("description")
+            });
+        }
+
+        return Ok(productCategories);
+    }
+
+    //GET api/product-categories/{id}
     [HttpGet("{id}")]
     public async Task<IActionResult> GetProductCategory(int id)
     {
@@ -38,7 +60,7 @@ public class ProductCategoryController : ControllerBase
         return Ok(productCategory);
     }
 
-    //GET by name
+    //GET api/product-categories/name/{name}
     [HttpGet("name/{name}")]
     public async Task<IActionResult> GetProductCategoryByName(string name)
     {
@@ -60,27 +82,5 @@ public class ProductCategoryController : ControllerBase
         };
 
         return Ok(productCategory);
-    }
-
-    //GET all
-    [HttpGet]
-    public async Task<IActionResult> GetAllProductCategories()
-    {
-        using var connection = await _dataSource.OpenConnectionAsync();
-        using var command = new NpgsqlCommand("SELECT * FROM sales.product_categories", connection);
-        using var reader = await command.ExecuteReaderAsync();
-
-        var productCategories = new List<ProductCategory>();
-        while (await reader.ReadAsync())
-        {
-            productCategories.Add(new ProductCategory
-            {
-                CategoryId = reader.GetInt32("id"),
-                Name = reader.GetString("category_name"),
-                Description = reader.GetString("description")
-            });
-        }
-
-        return Ok(productCategories);
     }
 }

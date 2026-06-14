@@ -14,7 +14,7 @@ public class OrdersController : ControllerBase
         _dataSource = dataSource;
     }
 
-    //GET
+    //GET api/orders
     [HttpGet]
     public async Task<IActionResult> GetOrders()
     {
@@ -27,7 +27,7 @@ public class OrdersController : ControllerBase
         {
             orders.Add(new Order
             {
-                OrderId = reader.GetInt32("id"),
+                OrderId = reader.GetInt32("order_id"),
                 UserId = reader.GetInt32("customer_id"),
                 OrderDate = reader.GetDateTime("order_date"),
                 Status = reader.GetString("status")
@@ -37,12 +37,12 @@ public class OrdersController : ControllerBase
         return Ok(orders);
     }
 
-    //GET order by ID
+    //GET api/orders/{id}
     [HttpGet("{id}")]
     public async Task<IActionResult> GetOrder(int id)
     {
         using var connection = await _dataSource.OpenConnectionAsync();
-        using var command = new NpgsqlCommand("SELECT * FROM sales.orders WHERE id = @id", connection);
+        using var command = new NpgsqlCommand("SELECT * FROM sales.orders WHERE order_id = @id", connection);
         command.Parameters.AddWithValue("@id", id);
         using var reader = await command.ExecuteReaderAsync();
 
@@ -53,7 +53,7 @@ public class OrdersController : ControllerBase
 
         var order = new Order
         {
-            OrderId = reader.GetInt32("id"),
+            OrderId = reader.GetInt32("order_id"),
             UserId = reader.GetInt32("customer_id"),
             OrderDate = reader.GetDateTime("order_date"),
             Status = reader.GetString("status")
@@ -62,12 +62,12 @@ public class OrdersController : ControllerBase
         return Ok(order);
     }
 
-    //POST
+    //POST api/orders
     [HttpPost]
     public async Task<IActionResult> CreateOrder([FromBody] Order order)
     {
         using var connection = await _dataSource.OpenConnectionAsync();
-        using var command = new NpgsqlCommand("INSERT INTO sales.orders (customer_id, order_date, status) VALUES (@customer_id, @order_date, @status) RETURNING id", connection);
+        using var command = new NpgsqlCommand("INSERT INTO sales.orders (customer_id, order_date, status) VALUES (@customer_id, @order_date, @status) RETURNING order_id", connection);
         command.Parameters.AddWithValue("@customer_id", order.UserId);
         command.Parameters.AddWithValue("@order_date", order.OrderDate ?? DateTime.Today);
         command.Parameters.AddWithValue("@status", order.Status ?? "Pending");
@@ -82,12 +82,12 @@ public class OrdersController : ControllerBase
         return CreatedAtAction(nameof(GetOrder), new { id = orderId }, order);
     }
 
-    //DELETE
+    //DELETE api/orders/{id}
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteOrder(int id)
     {
         using var connection = await _dataSource.OpenConnectionAsync();
-        using var command = new NpgsqlCommand("DELETE FROM sales.orders WHERE id = @id", connection);
+        using var command = new NpgsqlCommand("DELETE FROM sales.orders WHERE order_id = @id", connection);
         command.Parameters.AddWithValue("@id", id);
         await command.ExecuteNonQueryAsync();
         return NoContent();

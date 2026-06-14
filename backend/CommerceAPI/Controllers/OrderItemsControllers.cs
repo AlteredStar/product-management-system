@@ -14,7 +14,7 @@ public class OrderItemsController : ControllerBase
         _dataSource = dataSource;
     }
 
-    //GET
+    //GET api/orderitems
     [HttpGet]
     public async Task<IActionResult> GetOrderItems()
     {
@@ -27,7 +27,7 @@ public class OrderItemsController : ControllerBase
         {
             orderItems.Add(new OrderItem
             {
-                OrderItemsId = reader.GetInt32("id"),
+                OrderItemsId = reader.GetInt32("order_items_id"),
                 OrderId = reader.GetInt32("order_id"),
                 ProductId = reader.GetInt32("product_id"),
                 Quantity = reader.GetInt32("quantity")
@@ -37,12 +37,12 @@ public class OrderItemsController : ControllerBase
         return Ok(orderItems);
     }
 
-    //GET order item by ID
+    //GET api/orderitems/{id}
     [HttpGet("{id}")]
     public async Task<IActionResult> GetOrderItem(int id)
     {
         using var connection = await _dataSource.OpenConnectionAsync();
-        using var command = new NpgsqlCommand("SELECT * FROM sales.order_items WHERE id = @id", connection);
+        using var command = new NpgsqlCommand("SELECT * FROM sales.order_items WHERE order_items_id = @id", connection);
         command.Parameters.AddWithValue("@id", id);
         using var reader = await command.ExecuteReaderAsync();
 
@@ -53,7 +53,7 @@ public class OrderItemsController : ControllerBase
 
         var orderItem = new OrderItem
         {
-            OrderItemsId = reader.GetInt32("id"),
+            OrderItemsId = reader.GetInt32("order_items_id"),
             OrderId = reader.GetInt32("order_id"),
             ProductId = reader.GetInt32("product_id"),
             Quantity = reader.GetInt32("quantity")

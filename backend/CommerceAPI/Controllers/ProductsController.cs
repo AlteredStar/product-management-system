@@ -14,7 +14,7 @@ public class ProductsController : ControllerBase
         _dataSource = dataSource;
     }
 
-    //GET
+    //GET api/products
     [HttpGet]
     public async Task<IActionResult> GetProducts()
     {
@@ -27,7 +27,7 @@ public class ProductsController : ControllerBase
         {
             products.Add(new Product
             {
-                ProductId = reader.GetInt32("id"),
+                ProductId = reader.GetInt32("product_id"),
                 Name = reader.GetString("name"),
                 Description = reader.GetString("description"),
                 Price = reader.GetDecimal("price")
@@ -37,12 +37,12 @@ public class ProductsController : ControllerBase
         return Ok(products);
     }
 
-    //GET product by ID
+    //GET api/products/{id}
     [HttpGet("{id}")]
     public async Task<IActionResult> GetProduct(int id)
     {
         using var connection = await _dataSource.OpenConnectionAsync();
-        using var command = new NpgsqlCommand("SELECT * FROM inventory.products WHERE id = @id", connection);
+        using var command = new NpgsqlCommand("SELECT * FROM inventory.products WHERE product_id = @id", connection);
         command.Parameters.AddWithValue("@id", id);
         using var reader = await command.ExecuteReaderAsync();
 

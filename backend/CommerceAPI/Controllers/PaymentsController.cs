@@ -14,12 +14,12 @@ public class PaymentsController : ControllerBase
         _dataSource = dataSource;
     }
 
-    //GET
+    //GET api/payments/{id}
     [HttpGet("{id}")]
     public async Task<IActionResult> GetPayment(int id)
     {
         using var connection = await _dataSource.OpenConnectionAsync();
-        using var command = new NpgsqlCommand("SELECT * FROM sales.payments WHERE id = @id", connection);
+        using var command = new NpgsqlCommand("SELECT * FROM sales.payments WHERE payment_id = @id", connection);
         command.Parameters.AddWithValue("@id", id);
         using var reader = await command.ExecuteReaderAsync();
 
@@ -30,9 +30,9 @@ public class PaymentsController : ControllerBase
 
         var payment = new Payment
         {
-            PaymentId = reader.GetInt32("id"),
+            PaymentId = reader.GetInt32("payment_id"),
             OrderId = reader.GetInt32("order_id"),
-            AmountPaid = reader.GetDecimal("amount"),
+            AmountPaid = reader.GetDecimal("amount_paid"),
             PaymentDate = reader.GetDateTime("payment_date"),
             Status = reader.GetString("status")
         };
@@ -40,7 +40,7 @@ public class PaymentsController : ControllerBase
         return Ok(payment);
     }
 
-    //GET by id
+    //GET api/payments/order/{orderId}
     [HttpGet("order/{orderId}")]
     public async Task<IActionResult> GetPaymentByOrderId(int orderId)
     {
@@ -56,9 +56,9 @@ public class PaymentsController : ControllerBase
 
         var payment = new Payment
         {
-            PaymentId = reader.GetInt32("id"),
+            PaymentId = reader.GetInt32("payment_id"),
             OrderId = reader.GetInt32("order_id"),
-            AmountPaid = reader.GetDecimal("amount"),
+            AmountPaid = reader.GetDecimal("amount_paid"),
             PaymentDate = reader.GetDateTime("payment_date"),
             Status = reader.GetString("status")
         };
@@ -66,14 +66,14 @@ public class PaymentsController : ControllerBase
         return Ok(payment);
     }
 
-    //POST
+    //POST api/payments
     [HttpPost]
     public async Task<IActionResult> CreatePayment([FromBody] Payment payment)
     {
         using var connection = await _dataSource.OpenConnectionAsync();
-        using var command = new NpgsqlCommand("INSERT INTO sales.payments (order_id, amount, payment_date, status) VALUES (@orderId, @amount, @paymentDate, @status) RETURNING id", connection);
+        using var command = new NpgsqlCommand("INSERT INTO sales.payments (order_id, amount_paid, payment_date, status) VALUES (@orderId, @amountPaid, @paymentDate, @status) RETURNING payment_id", connection);
         command.Parameters.AddWithValue("@orderId", payment.OrderId);
-        command.Parameters.AddWithValue("@amount", payment.AmountPaid);
+        command.Parameters.AddWithValue("@amountPaid", payment.AmountPaid);
         command.Parameters.AddWithValue("@paymentDate", payment.PaymentDate ?? DateTime.Today);
         command.Parameters.AddWithValue("@status", payment.Status ?? "Pending");
         var id = await command.ExecuteScalarAsync();

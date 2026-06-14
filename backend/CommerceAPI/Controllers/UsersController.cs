@@ -27,7 +27,7 @@ public class UsersController : ControllerBase
         {
             users.Add(new User
             {
-                UserId = reader.GetInt32("id"),
+                UserId = reader.GetInt32("user_id"),
                 Username = reader.GetString("username"),
                 Email = reader.GetString("email")
             });
@@ -41,7 +41,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetUser(int id)
     {
         using var connection = await _dataSource.OpenConnectionAsync();
-        using var command = new NpgsqlCommand("SELECT * FROM customers.users WHERE id = @id", connection);
+        using var command = new NpgsqlCommand("SELECT * FROM customers.users WHERE user_id = @id", connection);
         command.Parameters.AddWithValue("@id", id);
         using var reader = await command.ExecuteReaderAsync();
 
@@ -52,7 +52,7 @@ public class UsersController : ControllerBase
 
         var user = new User
         {
-            UserId = reader.GetInt32("id"),
+            UserId = reader.GetInt32("user_id"),
             Username = reader.GetString("username"),
             Email = reader.GetString("email")
         };
