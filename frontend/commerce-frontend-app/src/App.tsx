@@ -1,14 +1,8 @@
-import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from './assets/vite.svg'
-// import heroImg from './assets/hero.png'
 import './App.css'
-//import axios from 'axios';
-import DropdownWithApi from './ProdCategoryDropDown.tsx'; 
+import AddProduct from './AddProduct.tsx';
+import ManageProduct from './ManageProduct.tsx';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
       <section id="center">
@@ -19,38 +13,33 @@ function App() {
 
       <div className="ticks"></div>
 
-      <section id="next-steps">
+      <section id="actions">
         <div id="docs">
-          <h2>Add Product</h2>
+          <h2>Add a Product</h2>
           <p>Enter product details below to add a new product.</p>
-          
-          <form action="/submit-path" method="POST">
-            <label htmlFor="product-name">Product Name:</label>
-            <input type="text" id="product-name" name="product-name" required/>
+          <AddProduct />
+        </div>
+      </section>
 
-            <label htmlFor="product-description">Product Description:</label>
-            <input type="text" id="product-description" name="product-description" required/>
+      <div className="ticks"></div>
 
-            <DropdownWithApi />
-
-            <label htmlFor="product-price">Product Price:</label>
-            <input type="number" id="product-price" name="product-price" required/>
-
-            <button type="submit">Submit</button>
-          </form>
-
+      <section id="actions">
+        <div id="docs">
+          <h2>Manage Products</h2>
+          <p>Search for, edit, and delete existing products.</p>
+          <ManageProduct />
         </div>
       </section>
 
       <div className="ticks"></div>
       <section id="spacer"></section>
 
-      <section id="next-steps">
+      <section id="footer">
         <div id="social">
           <p>Connect</p>
           <ul>
             <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
+              <a href="https://github.com/AlteredStar/product-management-system" target="_blank">
                 <svg
                   className="button-icon"
                   role="presentation"
@@ -62,15 +51,15 @@ function App() {
               </a>
             </li>
             <li>
-              <a href="https://chat.vite.dev/" target="_blank">
+              <a href="https://www.linkedin.com/in/kevin-dean-nguyen" target="_blank">
                 <svg
                   className="button-icon"
                   role="presentation"
                   aria-hidden="true"
                 >
-                  <use href="/icons.svg#discord-icon"></use>
+                  <use href="/icons.svg#linkedin-icon"></use>
                 </svg>
-                Discord
+                LinkedIn
               </a>
             </li>
           </ul>
