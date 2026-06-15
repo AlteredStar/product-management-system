@@ -116,6 +116,24 @@ public class ProductsController : ControllerBase
         return Ok();
     }
 
+    //POST api/products/batch
+    [HttpPost("batch")]
+    public async Task<IActionResult> CreateProductsBatch([FromBody] List<Product> products)
+    {
+        using var connection = await _dataSource.OpenConnectionAsync();
+        using var command = new NpgsqlCommand("INSERT INTO inventory.products (category_id, name, description, price, stock) VALUES (@category_id, @name, @description, @price, @stock)", connection);
+        foreach (var product in products)
+        {
+            command.Parameters.AddWithValue("@category_id", product.CategoryId);
+            command.Parameters.AddWithValue("@name", product.Name);
+            command.Parameters.AddWithValue("@description", product.Description ?? string.Empty);
+            command.Parameters.AddWithValue("@price", product.Price);
+            command.Parameters.AddWithValue("@stock", product.Stock);
+            await command.ExecuteNonQueryAsync();
+        }
+        return Ok();
+    }
+
     //PUT api/products/{id}
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateProduct(int id, Product product)

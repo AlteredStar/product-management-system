@@ -1,5 +1,6 @@
 import './App.css'
 import AddProduct from './AddProduct.tsx';
+import AddBatchProduct from './AddBatchProduct.tsx'
 import ManageProduct from './ManageProduct.tsx';
 
 function App() {
@@ -18,6 +19,14 @@ function App() {
           <h2>Add a Product</h2>
           <p>Enter product details below to add a new product.</p>
           <AddProduct />
+        </div>
+      </section>
+
+      <section id="actions">
+        <div id="docs">
+          <h2>Add a Batch of Products</h2>
+          <p>Upload a CSV file to add a batch of new products.</p>
+          <AddBatchProduct />
         </div>
       </section>
 
