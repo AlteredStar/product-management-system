@@ -2,6 +2,7 @@ import './App.css'
 import AddProduct from './AddProduct.tsx';
 import AddBatchProduct from './AddBatchProduct.tsx'
 import ManageProduct from './ManageProduct.tsx';
+import SalesChart from './SalesChart.tsx';
 
 function App() {
   return (
@@ -9,6 +10,16 @@ function App() {
       <section id="center">
         <div>
           <h1>Welcome to Commerce Manager</h1>
+        </div>
+      </section>
+      
+      <div className="ticks"></div>
+
+      <section id="actions">
+        <div id="docs">
+          <h2>Sales Chart</h2>
+          <p></p>
+          <SalesChart />
         </div>
       </section>
 
@@ -21,6 +32,8 @@ function App() {
           <AddProduct />
         </div>
       </section>
+
+      <div className="ticks"></div>
 
       <section id="actions">
         <div id="docs">
@@ -41,7 +54,6 @@ function App() {
       </section>
 
       <div className="ticks"></div>
-      <section id="spacer"></section>
 
       <section id="footer">
         <div id="social">

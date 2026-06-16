@@ -36,7 +36,7 @@ function AddBatchproduct() {
         const errorText = await response.text();
         setStatus(`Upload failed: ${errorText}`);
       }
-    } catch (error) {
+    } catch (err) {
       setStatus('Network error occurred.');
     }
   };

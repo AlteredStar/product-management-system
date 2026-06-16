@@ -16,7 +16,6 @@ function ProductCategoryDropDown() {
       })
       .then((data) => {
         setData(data);
-        console.log(data);
         setLoading(false);
       })
       .catch((error) => {

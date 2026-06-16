@@ -3,6 +3,18 @@ using Npgsql;
 using System.Data;
 using CommerceAPI.Models;
 
+public class CategoryRevenueDto
+{
+    public string CategoryName { get; set; }
+    public decimal TotalRevenue { get; set; }
+}
+
+public class DateRevenueDto
+{
+    public DateTime OrderDate { get; set; }
+    public decimal TotalRevenue { get; set; }
+}
+
 [ApiController]
 [Route("api/[controller]")]
 public class OrderItemsController : ControllerBase
@@ -60,5 +72,64 @@ public class OrderItemsController : ControllerBase
         };
 
         return Ok(orderItem);
+    }
+
+    //GET api/orderitems/category
+    [HttpGet("category")]
+    public async Task<IActionResult> GetOrderItemsByCategory()
+    {
+      using var connection = await _dataSource.OpenConnectionAsync();
+      using var command = new NpgsqlCommand("""
+        SELECT
+          inventory.categories.name as category_name,
+          SUM(sales.order_items.quantity * inventory.products.price) as total_revenue
+        FROM sales.order_items
+        JOIN inventory.products ON sales.order_items.product_id = inventory.products.product_id
+        JOIN inventory.categories ON inventory.products.category_id = inventory.categories.category_id
+        GROUP BY inventory.categories.name
+        ORDER BY total_revenue DESC
+        """, connection);
+      using var reader = await command.ExecuteReaderAsync();
+
+      var categoryRevenue = new List<CategoryRevenueDto>();
+      while (await reader.ReadAsync())
+      {
+        categoryRevenue.Add(new CategoryRevenueDto
+        {
+          CategoryName = reader.GetString("category_name"),
+          TotalRevenue = reader.GetDecimal("total_revenue")
+        });
+      }
+
+      return Ok(categoryRevenue);
+    }
+
+    //GET api/orderitems/date
+    [HttpGet("date")]
+    public async Task<IActionResult> GetOrderItemsByDate()
+    {
+        using var connection = await _dataSource.OpenConnectionAsync();
+        using var command = new NpgsqlCommand("""
+            SELECT 
+                sales.orders.order_date,
+                SUM(sales.order_items.quantity * inventory.products.price) as total_revenue
+            FROM sales.order_items
+            JOIN inventory.products ON sales.order_items.product_id = inventory.products.product_id
+            JOIN sales.orders ON sales.order_items.order_id = sales.orders.order_id
+            GROUP BY sales.orders.order_date
+            """, connection);
+        using var reader = await command.ExecuteReaderAsync();
+
+        var dateRevenue = new List<DateRevenueDto>();
+        while (await reader.ReadAsync())
+        {
+            dateRevenue.Add(new DateRevenueDto
+            {
+                OrderDate = reader.GetDateTime("order_date"),
+                TotalRevenue = reader.GetDecimal("total_revenue")
+            });
+        }
+
+        return Ok(dateRevenue);
     }
 }
