@@ -2,7 +2,7 @@ import './App.css'
 import AddProduct from './features/Products/AddProduct.tsx';
 import AddBatchProduct from './features/Products/AddBatchProduct.tsx'
 import ManageProduct from './features/Products/ManageProduct.tsx';
-import SalesChart from './components/charts/SalesChart.tsx';
+import SalesChart from './components/Chart/SalesChart.tsx';
 
 function App() {
   return (
