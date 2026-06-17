@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ChangeEvent } from 'react';
 import { Line, Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -45,9 +45,13 @@ const SalesChart = () => {
   const [error, setError] = useState<Error | null>(null);
  
   const [activeTab, setActiveTab] = useState("displayByDate");
-  const [chartType, setChartType] = useState("line");
+  const [activeYear, setActiveYear] = useState((new Date().getFullYear()));
+  const [availableYears, setAvailableYears] = useState<number[]>([]);
+
 
   useEffect(() => {
+    if (activeTab !== "displayByDate") return;
+
     const createChartByDate = async () => {
       try {
         const response = await fetch(`http://localhost:5045/api/orderitems/date`);
@@ -64,18 +68,23 @@ const SalesChart = () => {
           revenue: parseFloat(item.totalRevenue)
         }));
         
-        const targetYear = 2025; // TODO: add dynamic year selection 
+        setAvailableYears([...new Set(parsedData.map((item: any) => item.year))] as number[]);
+        if (!availableYears.includes(activeYear)) {
+          setActiveYear(availableYears[0]);
+        }
+
+        const targetYear = activeYear;
 
         const monthLabels: string[] = Array.from({ length: 12 }, (_, i) => {
           return new Date(0, i).toLocaleString('en-US', { month: 'long' });
         });
         const aggregatedData: number[] = new Array(12).fill(0);
         
-        const filteredData = parsedData.filter((item: any) => item.year === targetYear);
-
-        filteredData.forEach((curr: any) => {
-          aggregatedData[curr.month] += curr.revenue;
-        });
+        for (const curr of parsedData) {
+          if (curr.year === targetYear) {
+            aggregatedData[curr.month] += curr.revenue;
+          }
+        }
 
         setChartData((prevData) => ({
           ...prevData,
@@ -95,6 +104,16 @@ const SalesChart = () => {
         setLoading(false);
       }
     };
+
+    createChartByDate();
+  }, [activeTab, activeYear]);
+
+  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setActiveYear(parseInt(e.target.value));
+  };
+
+  useEffect(() => {
+    if (activeTab !== "displayByCategory") return;
 
     const createChartByCategory = async () => {
       try {
@@ -129,15 +148,8 @@ const SalesChart = () => {
         setLoading(false);
       }
     };
-
-    if (activeTab === "displayByDate") {
-      setChartType("line");
-      createChartByDate();
-    }
-    else if (activeTab === "displayByCategory") {
-      setChartType("bar");
-      createChartByCategory();
-    }
+ 
+    createChartByCategory();
   }, [activeTab]);
 
   const options = {
@@ -145,6 +157,11 @@ const SalesChart = () => {
     plugins: {
       legend: { position: 'top' as const },
       title: { display: true, text: 'Sales by Product Categories' },
+    },
+    scales: {
+      y: {
+        min: 0,
+      }
     },
   };
 
@@ -169,10 +186,23 @@ const SalesChart = () => {
           </button>
         </div>
       </div>
-    
+
+      {activeTab === "displayByDate" && (
+        <select value={activeYear} onChange={handleChange} className="buttons">
+          <option value="" disabled>
+            {loading ? 'Loading options...' : '-- Select an option --'}
+          </option>
+          {availableYears.map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
+      )}
+
       <div style={{ width: '80%', margin: '0 auto' }}>
-        {chartData && chartType === "line" && <Line data={chartData} options={options} redraw={true} />}
-        {chartData && chartType === "bar" && <Bar data={chartData} options={options} redraw={true} />}
+        {chartData && activeTab === "displayByDate" && <Line data={chartData} options={options} redraw={true} />}
+        {chartData && activeTab === "displayByCategory" && <Bar data={chartData} options={options} redraw={true} />}
       </div>
     </div>
   );
