@@ -1,5 +1,6 @@
 import ProdCategoryDropDown from "./ProdCategoryDropDown";
 import { type SubmitEvent } from 'react';
+import './AddProduct.css'
 import './App.css';
 
 function AddProduct() {

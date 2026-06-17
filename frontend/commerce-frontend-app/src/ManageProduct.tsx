@@ -190,7 +190,7 @@ function ManageProduct() {
             Previous
           </button>
           <span> Page {currentPage} of {totalPages || 1} </span>
-          <button disabled={currentPage === totalPages || totalPages === 0} onClick={() => setCurrentPage(prev => prev + 1)}>
+          <button disabled={currentPage === totalPages || totalPages === 0} onClick={() => setCurrentPage(prev => prev + 1)} className="buttons">
             Next
           </button>
         </div>

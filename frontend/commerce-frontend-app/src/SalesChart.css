@@ -1,0 +1,40 @@
+/* Centers the toggle container */
+.toggle-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* Places buttons side-by-side */
+.toggle-container {
+  display: flex;
+  background-color: var(--accent-bg);
+  padding: 4px;
+  border-radius: 9999px;
+  border: 1px solid var(--accent-bg);
+}
+
+/* Styling for both buttons */
+.toggle-btn {
+  padding: 8px 24px;
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  color: #dddfe3;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Hover state for inactive button */
+.toggle-btn:hover {
+  color: #bdbdbd;
+}
+
+/* Visual change for the active button */
+.toggle-btn.active {
+  background-color: var(--accent-bg);
+  color: var(--accent);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
