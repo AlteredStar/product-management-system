@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent } from 'react';
-import './App.css';
-import './AddProduct.css'
+import '../css/App.css';
+import '../css/AddProduct.css'
 
 function AddBatchproduct() {
   const [file, setFile] = useState<File | null>(null);

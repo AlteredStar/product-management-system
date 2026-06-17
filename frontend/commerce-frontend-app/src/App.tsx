@@ -1,8 +1,8 @@
 import './App.css'
-import AddProduct from './AddProduct.tsx';
-import AddBatchProduct from './AddBatchProduct.tsx'
-import ManageProduct from './ManageProduct.tsx';
-import SalesChart from './SalesChart.tsx';
+import AddProduct from './features/Products/AddProduct.tsx';
+import AddBatchProduct from './features/Products/AddBatchProduct.tsx'
+import ManageProduct from './features/Products/ManageProduct.tsx';
+import SalesChart from './components/charts/SalesChart.tsx';
 
 function App() {
   return (

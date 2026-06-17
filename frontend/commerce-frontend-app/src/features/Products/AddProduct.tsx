@@ -1,4 +1,4 @@
-import ProdCategoryDropDown from "./ProdCategoryDropDown";
+import ProdCategoryDropDown from "../../components/ProdCategoryDropDown";
 import { type SubmitEvent } from 'react';
 import './AddProduct.css'
 import './App.css';
