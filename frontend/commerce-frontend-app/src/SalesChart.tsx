@@ -156,7 +156,7 @@ const SalesChart = () => {
     responsive: true,
     plugins: {
       legend: { position: 'top' as const },
-      title: { display: true, text: 'Sales by Product Categories' },
+      title: { display: true, text: activeTab === "displayByDate" ? "Sales by Year" : "Sales by Product Categories" },
     },
     scales: {
       y: {
