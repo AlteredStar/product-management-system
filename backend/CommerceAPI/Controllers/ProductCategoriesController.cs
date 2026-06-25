@@ -5,27 +5,27 @@ using CommerceAPI.Models;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProductCategoryController : ControllerBase
+public class ProductCategoriesController : ControllerBase
 {
     private readonly NpgsqlDataSource _dataSource;
 
-    public ProductCategoryController(NpgsqlDataSource dataSource)
+    public ProductCategoriesController(NpgsqlDataSource dataSource)
     {
         _dataSource = dataSource;
     }
 
-    //GET api/product-categories
+    //GET api/productcategories
     [HttpGet]
-    public async Task<IActionResult> GetAllProductCategories()
+    public async Task<IActionResult> GetAllCategories()
     {
         using var connection = await _dataSource.OpenConnectionAsync();
         using var command = new NpgsqlCommand("SELECT * FROM inventory.categories", connection);
         using var reader = await command.ExecuteReaderAsync();
 
-        var productCategories = new List<ProductCategory>();
+        var categories = new List<ProductCategory>();
         while (await reader.ReadAsync())
         {
-            productCategories.Add(new ProductCategory
+            categories.Add(new ProductCategory
             {
                 CategoryId = reader.GetInt32("category_id"),
                 Name = reader.GetString("name"),
@@ -33,10 +33,10 @@ public class ProductCategoryController : ControllerBase
             });
         }
 
-        return Ok(productCategories);
+        return Ok(categories);
     }
 
-    //GET api/product-categories/{id}
+    //GET api/productcategories/{id}
     [HttpGet("{id}")]
     public async Task<IActionResult> GetProductCategory(int id)
     {
@@ -60,7 +60,7 @@ public class ProductCategoryController : ControllerBase
         return Ok(productCategory);
     }
 
-    //GET api/product-categories/name/{name}
+    //GET api/productcategories/name/{name}
     [HttpGet("name/{name}")]
     public async Task<IActionResult> GetProductCategoryByName(string name)
     {

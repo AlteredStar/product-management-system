@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import './AddProduct.css'
+import '../../features/Products/AddProduct.css'
 
 function ProductCategoryDropDown() {
   const [data, setData] = useState<{ categoryId: number; name: string; description: string }[]>([]); 
@@ -7,7 +7,7 @@ function ProductCategoryDropDown() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:5045/api/productcategory')
+    fetch('http://localhost:5045/api/productcategories')
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');

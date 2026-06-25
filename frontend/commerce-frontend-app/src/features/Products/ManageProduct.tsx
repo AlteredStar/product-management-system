@@ -1,5 +1,5 @@
 import { useState, useEffect, type ChangeEvent, type SubmitEvent } from 'react';
-import './App.css'
+import '../../App.css'
 
 interface Product {
   productId: number;
@@ -42,7 +42,7 @@ function ManageProduct() {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    fetch(`http://localhost:5045/api/productcategory`)
+    fetch(`http://localhost:5045/api/productcategories`)
       .then(res => res.json())
       .then((categories: ProductCategory[]) => {
         setCategory(categories);

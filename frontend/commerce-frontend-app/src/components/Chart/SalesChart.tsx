@@ -13,7 +13,7 @@ import {
   
 } from 'chart.js';
 import './SalesChart.css'
-import './App.css'
+import '../../App.css'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend);
 

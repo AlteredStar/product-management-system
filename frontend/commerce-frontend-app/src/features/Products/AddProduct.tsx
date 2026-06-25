@@ -1,7 +1,7 @@
 import ProdCategoryDropDown from "../../components/Products/CategoryDropDown";
 import { type SubmitEvent } from 'react';
 import './AddProduct.css'
-import './App.css';
+import '../../App.css';
 
 function AddProduct() {
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
