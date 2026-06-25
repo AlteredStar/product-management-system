@@ -7,80 +7,80 @@ using CommerceAPI.Models;
 [Route("api/[controller]")]
 public class ProductCategoriesController : ControllerBase
 {
-    private readonly NpgsqlDataSource _dataSource;
+  private readonly NpgsqlDataSource _dataSource;
 
-    public ProductCategoriesController(NpgsqlDataSource dataSource)
+  public ProductCategoriesController(NpgsqlDataSource dataSource)
+  {
+    _dataSource = dataSource;
+  }
+
+  //GET api/productcategories
+  [HttpGet]
+  public async Task<IActionResult> GetAllCategories()
+  {
+    using var connection = await _dataSource.OpenConnectionAsync();
+    using var command = new NpgsqlCommand("SELECT * FROM inventory.categories", connection);
+    using var reader = await command.ExecuteReaderAsync();
+
+    var categories = new List<ProductCategory>();
+    while (await reader.ReadAsync())
     {
-        _dataSource = dataSource;
-    }
-
-    //GET api/productcategories
-    [HttpGet]
-    public async Task<IActionResult> GetAllCategories()
-    {
-        using var connection = await _dataSource.OpenConnectionAsync();
-        using var command = new NpgsqlCommand("SELECT * FROM inventory.categories", connection);
-        using var reader = await command.ExecuteReaderAsync();
-
-        var categories = new List<ProductCategory>();
-        while (await reader.ReadAsync())
+        categories.Add(new ProductCategory
         {
-            categories.Add(new ProductCategory
-            {
-                CategoryId = reader.GetInt32("category_id"),
-                Name = reader.GetString("name"),
-                Description = reader.GetString("description")
-            });
-        }
-
-        return Ok(categories);
-    }
-
-    //GET api/productcategories/{id}
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetProductCategory(int id)
-    {
-        using var connection = await _dataSource.OpenConnectionAsync();
-        using var command = new NpgsqlCommand("SELECT * FROM sales.product_categories WHERE id = @id", connection);
-        command.Parameters.AddWithValue("@id", id);
-        using var reader = await command.ExecuteReaderAsync();
-
-        if (!await reader.ReadAsync())
-        {
-            return NotFound();
-        }
-
-        var productCategory = new ProductCategory
-        {
-            CategoryId = reader.GetInt32("id"),
-            Name = reader.GetString("category_name"),
+            CategoryId = reader.GetInt32("category_id"),
+            Name = reader.GetString("name"),
             Description = reader.GetString("description")
-        };
-
-        return Ok(productCategory);
+        });
     }
 
-    //GET api/productcategories/name/{name}
-    [HttpGet("name/{name}")]
-    public async Task<IActionResult> GetProductCategoryByName(string name)
+    return Ok(categories);
+  }
+
+  //GET api/productcategories/{id}
+  [HttpGet("{id}")]
+  public async Task<IActionResult> GetProductCategory(int id)
+  {
+    using var connection = await _dataSource.OpenConnectionAsync();
+    using var command = new NpgsqlCommand("SELECT * FROM sales.product_categories WHERE id = @id", connection);
+    command.Parameters.AddWithValue("@id", id);
+    using var reader = await command.ExecuteReaderAsync();
+
+    if (!await reader.ReadAsync())
     {
-        using var connection = await _dataSource.OpenConnectionAsync();
-        using var command = new NpgsqlCommand("SELECT * FROM sales.product_categories WHERE category_name = @name", connection);
-        command.Parameters.AddWithValue("@name", name);
-        using var reader = await command.ExecuteReaderAsync();
-
-        if (!await reader.ReadAsync())
-        {
-            return NotFound();
-        }
-
-        var productCategory = new ProductCategory
-        {
-            CategoryId = reader.GetInt32("id"),
-            Name = reader.GetString("category_name"),
-            Description = reader.GetString("description")
-        };
-
-        return Ok(productCategory);
+        return NotFound();
     }
+
+    var productCategory = new ProductCategory
+    {
+        CategoryId = reader.GetInt32("id"),
+        Name = reader.GetString("category_name"),
+        Description = reader.GetString("description")
+    };
+
+    return Ok(productCategory);
+  }
+
+  //GET api/productcategories/name/{name}
+  [HttpGet("name/{name}")]
+  public async Task<IActionResult> GetProductCategoryByName(string name)
+  {
+    using var connection = await _dataSource.OpenConnectionAsync();
+    using var command = new NpgsqlCommand("SELECT * FROM sales.product_categories WHERE category_name = @name", connection);
+    command.Parameters.AddWithValue("@name", name);
+    using var reader = await command.ExecuteReaderAsync();
+
+    if (!await reader.ReadAsync())
+    {
+        return NotFound();
+    }
+
+    var productCategory = new ProductCategory
+    {
+        CategoryId = reader.GetInt32("id"),
+        Name = reader.GetString("category_name"),
+        Description = reader.GetString("description")
+    };
+
+    return Ok(productCategory);
+  }
 }
